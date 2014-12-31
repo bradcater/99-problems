@@ -1,17 +1,15 @@
 // Problems taken from:
 //   http://aperiodic.net/phil/scala/s-99/
-object solutions extends App {
+class Solutions {
   // P01 (*) Find the last element of a list.
   // Example:
   // scala> last(List(1, 1, 2, 3, 5, 8))
   // res0: Int = 8
-  def last(l: List[Int]) : Int = l match {
+  def last(l: List[Any]) : Any = l match {
     case Nil      => -1
     case h :: Nil => h
     case _        => last(l.tail)
   }
-  printf("last(List(1,2,3)): %d\n",
-    last(List(1,2,3)))
   // P02 (*) Find the last but one element of a list.
   // Example:
   // scala> penultimate(List(1, 1, 2, 3, 5, 8))
@@ -21,8 +19,6 @@ object solutions extends App {
     case h1 :: h2 :: Nil => h1
     case _               => penultimate(l.tail)
   }
-  printf("penultimate(List(1,2,3)): %d\n",
-    penultimate(List(1,2,3)))
   // P03 (*) Find the Kth element of a list.
   // By convention, the first element in the list is element 0.
   // Example:
@@ -39,8 +35,6 @@ object solutions extends App {
     }
     loop(0, l)
   }
-  printf("nth(2, List(1,2,3,4)): %d\n",
-    nth(2, List(1,2,3,4)))
   // P04 (*) Find the number of elements of a list.
   // Example:
   // scala> length(List(1, 1, 2, 3, 5, 8))
@@ -52,26 +46,22 @@ object solutions extends App {
     }
     loop(0, l)
   }
-  printf("length(List(1,2,3,4)): %d\n",
-    length(List(1,2,3,4)))
   // P05 (*) Reverse a list.
   // Example:
   // scala> reverse(List(1, 1, 2, 3, 5, 8))
   // res0: List[Int] = List(8, 5, 3, 2, 1, 1)
-  def reverse(l: List[Int]) : List[Int] = {
-    def loop(acc: List[Int], lst: List[Int]) : List[Int] = lst match {
+  def reverse(l: List[Any]) : List[Any] = {
+    def loop(acc: List[Any], lst: List[Any]) : List[Any] = lst match {
       case Nil => acc
       case _   => loop(lst.head :: acc, lst.tail)
     }
     loop(Nil, l)
   }
-  printf("reverse(List(1,2,3,4)): %s\n",
-    reverse(List(1,2,3,4)).mkString(" "))
   // P06 (*) Find out whether a list is a palindrome.
   // Example:
   // scala> isPalindrome(List(1, 2, 3, 2, 1))
   // res0: Boolean = true
-  def isPalindrome(l: List[Int]) : Boolean = {
+  def isPalindrome(l: List[Any]) : Boolean = {
     if (length(l) == 0 || length(l) == 1) {
       return true
     } else if (l.head == last(l)) {
@@ -80,36 +70,30 @@ object solutions extends App {
       return false
     }
   }
-  printf("isPalindrome(List(1,2,3,4)): %b\n",
-    isPalindrome(List(1,2,3,4)))
-  printf("isPalindrome(List(1,2,2,1)): %b\n",
-    isPalindrome(List(1,2,2,1)))
   // P07 (**) Flatten a nested list structure.
   // Example:
   // scala> flatten(List(List(1, 1), 2, List(3, List(5, 8))))
   // res0: List[Any] = List(1, 1, 2, 3, 5, 8)
-  def flatten(l: List[Any]) : List[Int] = {
-    def loop(acc: List[Int], lst: List[Any]) : List[Int] = {
+  def flatten(l: List[Any]) : List[Any] = {
+    def loop(acc: List[Any], lst: List[Any]) : List[Any] = {
       if (lst.length == 0) {
         return acc
-      } else if (lst.head.isInstanceOf[List[Int]]) {
-        return loop(acc ++ reverse(flatten(lst.head.asInstanceOf[List[Int]])), lst.tail)
+      } else if (lst.head.isInstanceOf[List[Any]]) {
+        return loop(reverse(flatten(lst.head.asInstanceOf[List[Any]])) ++ acc, lst.tail)
       } else {
-        return loop(lst.head.asInstanceOf[Int] :: acc, lst.tail)
+        return loop(lst.head.asInstanceOf[Any] :: acc, lst.tail)
       }
     }
     reverse(loop(Nil, l))
   }
-  printf("flatten(List(List(1,2,3),4)): %s\n",
-    flatten(List(List(1,2,3),4)))
   // P08 (**) Eliminate consecutive duplicates of list elements.
   // If a list contains repeated elements they should be replaced with a single copy of the element. The order of the elements should not be changed.
   // Example:
   // 
   // scala> compress(List('a, 'a, 'a, 'a, 'b, 'c, 'c, 'a, 'a, 'd, 'e, 'e, 'e, 'e))
   // res0: List[Symbol] = List('a, 'b, 'c, 'a, 'd, 'e)
-  def compress(l: List[Int]) : List[Int] = {
-    def loop(acc: List[Int], lst: List[Int]) : List[Int] = {
+  def compress(l: List[Any]) : List[Any] = {
+    def loop(acc: List[Any], lst: List[Any]) : List[Any] = {
       if (length(lst) == 0) {
         return acc
       } else if (length(acc) == 0) {
@@ -128,8 +112,8 @@ object solutions extends App {
   // 
   // scala> pack(List('a, 'a, 'a, 'a, 'b, 'c, 'c, 'a, 'a, 'd, 'e, 'e, 'e, 'e))
   // res0: List[List[Symbol]] = List(List('a, 'a, 'a, 'a), List('b), List('c, 'c), List('a, 'a), List('d), List('e, 'e, 'e, 'e))
-  def pack(l: List[Int]) : List[List[Int]] = {
-    def loop(acc: List[List[Int]], lst: List[Int]) : List[List[Int]] = {
+  def pack(l: List[Any]) : List[List[Any]] = {
+    def loop(acc: List[List[Any]], lst: List[Any]) : List[List[Any]] = {
       if (length(lst) == 0) {
         return acc
       } else if (length(acc) == 0) {
@@ -142,35 +126,55 @@ object solutions extends App {
     }
     loop(Nil, reverse(l))
   }
-  printf("pack(List(1,2,2,3,3,3,4)): %s\n",
-    pack(List(1,2,2,3,3,3,4)).mkString(" "))
   // P10 (*) Run-length encoding of a list.
   // Use the result of problem P09 to implement the so-called run-length encoding data compression method. Consecutive duplicates of elements are encoded as tuples (N, E) where N is the number of duplicates of the element E.
   // Example:
   // 
   // scala> encode(List('a, 'a, 'a, 'a, 'b, 'c, 'c, 'a, 'a, 'd, 'e, 'e, 'e, 'e))
   // res0: List[(Int, Symbol)] = List((4,'a), (1,'b), (2,'c), (2,'a), (1,'d), (4,'e))
-  def encode(l: List[Int]) : List[(Int, Int)] = {
-    def loop(acc: List[(Int, Int)], lst: List[List[Int]]) : List[(Int, Int)] = lst match {
+  def encode(l: List[Any]) : List[(Int, Any)] = {
+    def loop(acc: List[(Int, Any)], lst: List[List[Any]]) : List[(Int, Any)] = lst match {
       case Nil => acc
       case _   => loop((length(lst.head), lst.head.head) :: acc, lst.tail)
     }
     loop(Nil, pack(reverse(l)))
   }
-  printf("encode(List(1,2,2,3,3,3,4)): %s\n",
-    encode(List(1,2,2,3,3,3,4)).mkString(" "))
   // P11 (*) Modified run-length encoding.
   // Modify the result of problem P10 in such a way that if an element has no duplicates it is simply copied into the result list. Only elements with duplicates are transferred as (N, E) terms.
   // Example:
   // 
   // scala> encodeModified(List('a, 'a, 'a, 'a, 'b, 'c, 'c, 'a, 'a, 'd, 'e, 'e, 'e, 'e))
   // res0: List[Any] = List((4,'a), 'b, (2,'c), (2,'a), 'd, (4,'e))
+  def encodeModified(l: List[Any]) : List[Any] = {
+    def loop(acc: List[Any], lst: List[(Int, Any)]) : List[Any] = {
+      if (length(lst) == 0) {
+        return acc
+      } else if (lst.head._1 == 1) {
+        return loop(lst.head._2 :: acc, lst.tail)
+      } else {
+        return loop(lst.head :: acc, lst.tail)
+      }
+    }
+    reverse(loop(Nil, encode(l)))
+  }
   // P12 (**) Decode a run-length encoded list.
   // Given a run-length code list generated as specified in problem P10, construct its uncompressed version.
   // Example:
   // 
   // scala> decode(List((4, 'a), (1, 'b), (2, 'c), (2, 'a), (1, 'd), (4, 'e)))
   // res0: List[Symbol] = List('a, 'a, 'a, 'a, 'b, 'c, 'c, 'a, 'a, 'd, 'e, 'e, 'e, 'e)
+  def decode(l: List[(Int, Any)]) : List[Any] = {
+    def loop(acc: List[Any], lst: List[(Int, Any)]) : List[Any] = {
+      if (length(lst) == 0) {
+        return acc
+      } else if (lst.head._1 == 0) {
+        return loop(acc, lst.tail)
+      } else {
+        return loop(lst.head._2 :: acc, (lst.head._1 - 1, lst.head._2) :: lst.tail)
+      }
+    }
+    reverse(loop(Nil, l))
+  }
   // P13 (**) Run-length encoding of a list (direct solution).
   // Implement the so-called run-length encoding data compression method directly. I.e. don't use other methods you've written (like P09's pack); do all the work directly.
   // Example:

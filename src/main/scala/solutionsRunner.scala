@@ -195,4 +195,125 @@ object SolutionsRunner extends App {
   }
   printf("decode(List((4, 'a), (1, 'b), (2, 'c), (2, 'a), (1, 'd), (4, 'e))): %s\n",
     decode(List((4, 'a), (1, 'b), (2, 'c), (2, 'a), (1, 'd), (4, 'e))))
+  // P14 (*) Duplicate the elements of a list.
+  // Example:
+  // scala> duplicate(List('a, 'b, 'c, 'c, 'd))
+  // res0: List[Symbol] = List('a, 'a, 'b, 'b, 'c, 'c, 'c, 'c, 'd, 'd)
+  def duplicate(l: List[Any]) : List[Any] = {
+    duplicateN(2, l)
+  }
+  printf("duplicate(List(1,2,3)): %s\n",
+    duplicate(List(1,2,3)).mkString(" "))
+  // P15 (**) Duplicate the elements of a list a given number of times.
+  // Example:
+  // scala> duplicateN(3, List('a, 'b, 'c, 'c, 'd))
+  // res0: List[Symbol] = List('a, 'a, 'a, 'b, 'b, 'b, 'c, 'c, 'c, 'c, 'c, 'c, 'd, 'd, 'd)
+  def duplicateN(n: Int, l: List[Any]) : List[Any] = {
+    def loop(r: Int, acc: List[Any], lst: List[Any]) : List[Any] = {
+      if (length(lst) == 0) {
+        return acc
+      } else if (r == n) {
+        return loop(0, acc, lst.tail)
+      } else {
+        return loop(r + 1, lst.head :: acc, lst)
+      }
+    }
+    loop(0, Nil, reverse(l))
+  }
+  printf("duplicateN(3, List(1, 2, 3, 3, 4)): %s\n",
+    duplicateN(3, List(1, 2, 3, 3, 4)))
+  // P16 (**) Drop every Nth element from a list.
+  // Example:
+  // scala> drop(3, List('a, 'b, 'c, 'd, 'e, 'f, 'g, 'h, 'i, 'j, 'k))
+  // res0: List[Symbol] = List('a, 'b, 'd, 'e, 'g, 'h, 'j, 'k)
+  def drop(n: Int, l: List[Any]) : List[Any] = {
+    def loop(r: Int, acc: List[Any], lst: List[Any]) : List[Any] = {
+      if (length(lst) == 0) {
+        return acc
+      } else if (r == n) {
+        return loop(1, acc, lst.tail)
+      } else {
+        return loop(r + 1, lst.head :: acc, lst.tail)
+      }
+    }
+    reverse(loop(1, Nil, l))
+  }
+  printf("drop(3, List(1,2,3,4,5,6,7,8,9,10)): %s\n",
+    drop(3, List(1,2,3,4,5,6,7,8,9,10)).mkString(" "))
+  // P17 (*) Split a list into two parts.
+  // The length of the first part is given. Use a Tuple for your result.
+  // Example:
+  // 
+  // scala> split(3, List('a, 'b, 'c, 'd, 'e, 'f, 'g, 'h, 'i, 'j, 'k))
+  // res0: (List[Symbol], List[Symbol]) = (List('a, 'b, 'c),List('d, 'e, 'f, 'g, 'h, 'i, 'j, 'k))
+  def split(n: Int, l: List[Any]) : (List[Any], List[Any]) = {
+    def loop(r: Int, acc: List[Any], lst: List[Any]) : (List[Any], List[Any]) = {
+      if (r == n) {
+        return (reverse(acc), lst)
+      } else {
+        return loop(r + 1, lst.head :: acc, lst.tail)
+      }
+    }
+    loop(0, Nil, l)
+  }
+  printf("split(3, List(1,2,3,4,5,6,7,8,9,10)): %s\n",
+    split(3, List(1,2,3,4,5,6,7,8,9,10)))
+  // P18 (**) Extract a slice from a list.
+  // Given two indices, I and K, the slice is the list containing the elements from and including the Ith element up to but not including the Kth element of the original list. Start counting the elements with 0.
+  // Example:
+  // 
+  // scala> slice(3, 7, List('a, 'b, 'c, 'd, 'e, 'f, 'g, 'h, 'i, 'j, 'k))
+  // res0: List[Symbol] = List('d, 'e, 'f, 'g)
+  def slice(a: Int, b: Int, l: List[Any]) : List[Any] = {
+    def loop(i: Int, acc: List[Any], lst: List[Any]) : List[Any] = {
+      if (i >= b) {
+        return reverse(acc)
+      } else if (i >= a) {
+        return loop(i + 1, lst.head :: acc, lst.tail)
+      } else {
+        return loop(i + 1, acc, lst.tail)
+      }
+    }
+    loop(0, Nil, l)
+  }
+  printf("slice(3, 7, List(1,2,3,4,5,6,7,8,9,10)): %s\n",
+    slice(3, 7, List(1,2,3,4,5,6,7,8,9,10)))
+  // P19 (**) Rotate a list N places to the left.
+  // Examples:
+  // scala> rotate(3, List('a, 'b, 'c, 'd, 'e, 'f, 'g, 'h, 'i, 'j, 'k))
+  // res0: List[Symbol] = List('d, 'e, 'f, 'g, 'h, 'i, 'j, 'k, 'a, 'b, 'c)
+  // 
+  // scala> rotate(-2, List('a, 'b, 'c, 'd, 'e, 'f, 'g, 'h, 'i, 'j, 'k))
+  // res1: List[Symbol] = List('j, 'k, 'a, 'b, 'c, 'd, 'e, 'f, 'g, 'h, 'i)
+  def rotate(n: Int, l: List[Any]) : List[Any] = {
+    if (n < 0) {
+      rotate(length(l) + n, l)
+    } else {
+      slice(n, length(l), l) ++ slice(0, n, l)
+    }
+  }
+  printf("rotate(3, List(1,2,3,4,5,6,7,8,9,10)): %s\n",
+    rotate(3, List(1,2,3,4,5,6,7,8,9,10)))
+  printf("rotate(-2, List(1,2,3,4,5,6,7,8,9,10)): %s\n",
+    rotate(-2, List(1,2,3,4,5,6,7,8,9,10)))
+  // P20 (*) Remove the Kth element from a list.
+  // Return the list and the removed element in a Tuple. Elements are numbered from 0.
+  // Example:
+  // 
+  // scala> removeAt(1, List('a, 'b, 'c, 'd))
+  // res0: (List[Symbol], Symbol) = (List('a, 'c, 'd),'b)
+  def removeAt(k: Int, l: List[Any]) : (List[Any], Any) = {
+    (slice(0, k, l) ++ slice(k + 1, length(l), l), nth(k, l))
+  }
+  printf("removeAt(1, List(1,2,3,4)): %s\n",
+    removeAt(1, List(1,2,3,4)))
+  // P21 (*) Insert an element at a given position into a list.
+  // Example:
+  // scala> insertAt('new, 1, List('a, 'b, 'c, 'd))
+  // res0: List[Symbol] = List('a, 'new, 'b, 'c, 'd)
+  def insertAt(elm: Any, n: Int, l: List[Any]) : List[Any] = {
+    slice(0, n, l) ++ List(elm) ++ slice(n, length(l), l)
+  }
+  printf("insertAt(5, 1, List(1,2,3,4)): %s\n",
+    insertAt(5, 1, List(1,2,3,4)))
 }

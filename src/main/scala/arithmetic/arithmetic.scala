@@ -1,5 +1,7 @@
+import scala.annotation.tailrec
+
 package arithmetic {
-  class S99Int(val start: Int) {
+  final class S99Int(val start: Int) {
     import S99Int._
     // P31 (**) Determine whether a given integer number is prime.
     // scala> 7.isPrime
@@ -10,7 +12,7 @@ package arithmetic {
     // Use Euclid's algorithm.
     // scala> gcd(36, 63)
     // res0: Int = 9
-    def gcd(a: Int, b: Int) : Int = {
+    @tailrec def gcd(a: Int, b: Int) : Int = {
       if (a == b) {
         a
       } else if (a > b) {
@@ -38,16 +40,25 @@ package arithmetic {
     // scala> 315.primeFactors
     // res0: List[Int] = List(3, 3, 5, 7)
     def primeFactors : List[Int] = {
-      def loop(n: Int, ps: Stream[Int]): List[Int] = {
+      def reverse(l: List[Int]) : List[Int] = {
+        @tailrec def loop(acc: List[Int], lst: List[Int]) : List[Int] = lst match {
+          case Nil => acc
+          case _   => loop(lst.head :: acc, lst.tail)
+        }
+        loop(Nil, l)
+      }
+      @tailrec def loop(acc: List[Int], n: Int, ps: Stream[Int]): List[Int] = {
         if (n.isPrime) {
-          List(n)
+          //List(n)
+          n :: acc
         } else if (n % ps.head == 0) {
-          ps.head :: loop(n / ps.head, ps)
+          loop(ps.head :: acc, n / ps.head, ps)
+          //ps.head :: loop(n / ps.head, ps)
         } else {
-          loop(n, ps.tail)
+          loop(acc, n, ps.tail)
         }
       }
-      loop(this, primes)
+      reverse(loop(Nil, this, primes))
     }
     // P36 (**) Determine the prime factors of a given positive integer (2).
     // Construct a list containing the prime factors and their multiplicity.
@@ -58,7 +69,7 @@ package arithmetic {
     // scala> 315.primeFactorMultiplicity
     // res0: Map[Int,Int] = Map(3 -> 2, 5 -> 1, 7 -> 1)
     def primeFactorMultiplicity : Map[Int, Int] = {
-      def loop(acc: Map[Int,Int], r: List[Int]) : Map[Int,Int] = {
+      @tailrec def loop(acc: Map[Int,Int], r: List[Int]) : Map[Int,Int] = {
         if (r.size == 0) {
           acc
         } else {
@@ -73,7 +84,7 @@ package arithmetic {
     // 
     // Note that ab stands for the bth power of a.
     def prod(l: List[Double]) : Double = {
-      def loop(p: Double, lst: List[Double]) : Double = {
+      @tailrec def loop(p: Double, lst: List[Double]) : Double = {
         if (lst.size == 0) p
         else loop(p * lst.head, lst.tail)
       }
@@ -96,7 +107,7 @@ package arithmetic {
     // scala> 28.goldbach
     // res0: (Int, Int) = (5,23)
     def goldbach : (Int, Int) = {
-      def loop(ps: Stream[Int]) : (Int, Int) = {
+      @tailrec def loop(ps: Stream[Int]) : (Int, Int) = {
         if ((this - ps.head).isPrime) (ps.head, this - ps.head)
         else loop(ps.tail)
       }
@@ -112,7 +123,7 @@ package arithmetic {
     // 18 = 5 + 13
     // 20 = 3 + 17
     def printGoldbachList(r: Range) : Unit = {
-      def loop(l: List[Int]) : Unit = {
+      @tailrec def loop(l: List[Int]) : Unit = {
         if (l.size == 0) {
           ()
         } else {
@@ -133,7 +144,7 @@ package arithmetic {
     // 1856 = 67 + 1789
     // 1928 = 61 + 1867
     def printGoldbachListLimited(r: Range, n: Int) : Unit = {
-      def loop(l: List[Int]) : Unit = {
+      @tailrec def loop(l: List[Int]) : Unit = {
         if (l.size == 0) {
           ()
         } else {

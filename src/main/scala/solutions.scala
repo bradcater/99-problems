@@ -1,11 +1,13 @@
+import scala.annotation.tailrec
+
 // Problems taken from:
 //   http://aperiodic.net/phil/scala/s-99/
-class Solutions {
+final class Solutions {
   // P01 (*) Find the last element of a list.
   // Example:
   // scala> last(List(1, 1, 2, 3, 5, 8))
   // res0: Int = 8
-  def last(l: List[Any]) : Any = l match {
+  @tailrec def last(l: List[Any]) : Any = l match {
     case Nil      => -1
     case h :: Nil => h
     case _        => last(l.tail)
@@ -14,7 +16,7 @@ class Solutions {
   // Example:
   // scala> penultimate(List(1, 1, 2, 3, 5, 8))
   // res0: Int = 5
-  def penultimate(l: List[Int]) : Int = l match {
+  @tailrec def penultimate(l: List[Int]) : Int = l match {
     case Nil             => -1
     case h1 :: h2 :: Nil => h1
     case _               => penultimate(l.tail)
@@ -26,7 +28,7 @@ class Solutions {
   // scala> nth(2, List(1, 1, 2, 3, 5, 8))
   // res0: Int = 2
   def nth(k: Int, l: List[Any]) : Any = {
-    def loop(c: Int, lst: List[Any]) : Any = {
+    @tailrec def loop(c: Int, lst: List[Any]) : Any = {
       if (c == k) {
         lst.head
       } else {
@@ -40,7 +42,7 @@ class Solutions {
   // scala> length(List(1, 1, 2, 3, 5, 8))
   // res0: Int = 6
   def length(l: List[Any]) : Int = {
-    def loop(c: Int, lst: List[Any]) : Int = lst match {
+    @tailrec def loop(c: Int, lst: List[Any]) : Int = lst match {
       case Nil => c
       case _   => loop(c + 1, lst.tail)
     }
@@ -54,7 +56,7 @@ class Solutions {
   // scala> reverse(List(1, 1, 2, 3, 5, 8))
   // res0: List[Int] = List(8, 5, 3, 2, 1, 1)
   def reverse(l: List[Any]) : List[Any] = {
-    def loop(acc: List[Any], lst: List[Any]) : List[Any] = lst match {
+    @tailrec def loop(acc: List[Any], lst: List[Any]) : List[Any] = lst match {
       case Nil => acc
       case _   => loop(lst.head :: acc, lst.tail)
     }
@@ -64,7 +66,7 @@ class Solutions {
   // Example:
   // scala> isPalindrome(List(1, 2, 3, 2, 1))
   // res0: Boolean = true
-  def isPalindrome(l: List[Any]) : Boolean = {
+  @tailrec def isPalindrome(l: List[Any]) : Boolean = {
     if (empty(l) || length(l) == 1) {
       true
     } else if (l.head == last(l)) {
@@ -78,7 +80,7 @@ class Solutions {
   // scala> flatten(List(List(1, 1), 2, List(3, List(5, 8))))
   // res0: List[Any] = List(1, 1, 2, 3, 5, 8)
   def flatten(l: List[Any]) : List[Any] = {
-    def loop(acc: List[Any], lst: List[Any]) : List[Any] = {
+    @tailrec def loop(acc: List[Any], lst: List[Any]) : List[Any] = {
       if (empty(lst)) {
         acc
       } else if (lst.head.isInstanceOf[List[Any]]) {
@@ -96,7 +98,7 @@ class Solutions {
   // scala> compress(List('a, 'a, 'a, 'a, 'b, 'c, 'c, 'a, 'a, 'd, 'e, 'e, 'e, 'e))
   // res0: List[Symbol] = List('a, 'b, 'c, 'a, 'd, 'e)
   def compress(l: List[Any]) : List[Any] = {
-    def loop(acc: List[Any], lst: List[Any]) : List[Any] = {
+    @tailrec def loop(acc: List[Any], lst: List[Any]) : List[Any] = {
       if (empty(lst)) {
         acc
       } else if (empty(acc)) {
@@ -116,7 +118,7 @@ class Solutions {
   // scala> pack(List('a, 'a, 'a, 'a, 'b, 'c, 'c, 'a, 'a, 'd, 'e, 'e, 'e, 'e))
   // res0: List[List[Symbol]] = List(List('a, 'a, 'a, 'a), List('b), List('c, 'c), List('a, 'a), List('d), List('e, 'e, 'e, 'e))
   def pack(l: List[Any]) : List[List[Any]] = {
-    def loop(acc: List[List[Any]], lst: List[Any]) : List[List[Any]] = {
+    @tailrec def loop(acc: List[List[Any]], lst: List[Any]) : List[List[Any]] = {
       if (empty(lst)) {
         acc
       } else if (empty(acc)) {
@@ -136,7 +138,7 @@ class Solutions {
   // scala> encode(List('a, 'a, 'a, 'a, 'b, 'c, 'c, 'a, 'a, 'd, 'e, 'e, 'e, 'e))
   // res0: List[(Int, Symbol)] = List((4,'a), (1,'b), (2,'c), (2,'a), (1,'d), (4,'e))
   def encode(l: List[Any]) : List[(Int, Any)] = {
-    def loop(acc: List[(Int, Any)], lst: List[List[Any]]) : List[(Int, Any)] = lst match {
+    @tailrec def loop(acc: List[(Int, Any)], lst: List[List[Any]]) : List[(Int, Any)] = lst match {
       case Nil => acc
       case _   => loop((length(lst.head), lst.head.head) :: acc, lst.tail)
     }
@@ -149,7 +151,7 @@ class Solutions {
   // scala> encodeModified(List('a, 'a, 'a, 'a, 'b, 'c, 'c, 'a, 'a, 'd, 'e, 'e, 'e, 'e))
   // res0: List[Any] = List((4,'a), 'b, (2,'c), (2,'a), 'd, (4,'e))
   def encodeModified(l: List[Any]) : List[Any] = {
-    def loop(acc: List[Any], lst: List[(Int, Any)]) : List[Any] = {
+    @tailrec def loop(acc: List[Any], lst: List[(Int, Any)]) : List[Any] = {
       if (empty(lst)) {
         acc
       } else if (lst.head._1 == 1) {
@@ -167,7 +169,7 @@ class Solutions {
   // scala> decode(List((4, 'a), (1, 'b), (2, 'c), (2, 'a), (1, 'd), (4, 'e)))
   // res0: List[Symbol] = List('a, 'a, 'a, 'a, 'b, 'c, 'c, 'a, 'a, 'd, 'e, 'e, 'e, 'e)
   def decode(l: List[(Int, Any)]) : List[Any] = {
-    def loop(acc: List[Any], lst: List[(Int, Any)]) : List[Any] = {
+    @tailrec def loop(acc: List[Any], lst: List[(Int, Any)]) : List[Any] = {
       if (empty(lst)) {
         acc
       } else if (lst.head._1 == 0) {
@@ -196,7 +198,7 @@ class Solutions {
   // scala> duplicateN(3, List('a, 'b, 'c, 'c, 'd))
   // res0: List[Symbol] = List('a, 'a, 'a, 'b, 'b, 'b, 'c, 'c, 'c, 'c, 'c, 'c, 'd, 'd, 'd)
   def duplicateN(n: Int, l: List[Any]) : List[Any] = {
-    def loop(r: Int, acc: List[Any], lst: List[Any]) : List[Any] = {
+    @tailrec def loop(r: Int, acc: List[Any], lst: List[Any]) : List[Any] = {
       if (empty(lst)) {
         acc
       } else if (r == n) {
@@ -212,7 +214,7 @@ class Solutions {
   // scala> drop(3, List('a, 'b, 'c, 'd, 'e, 'f, 'g, 'h, 'i, 'j, 'k))
   // res0: List[Symbol] = List('a, 'b, 'd, 'e, 'g, 'h, 'j, 'k)
   def drop(n: Int, l: List[Any]) : List[Any] = {
-    def loop(r: Int, acc: List[Any], lst: List[Any]) : List[Any] = {
+    @tailrec def loop(r: Int, acc: List[Any], lst: List[Any]) : List[Any] = {
       if (empty(lst)) {
         acc
       } else if (r == n) {
@@ -230,7 +232,7 @@ class Solutions {
   // scala> split(3, List('a, 'b, 'c, 'd, 'e, 'f, 'g, 'h, 'i, 'j, 'k))
   // res0: (List[Symbol], List[Symbol]) = (List('a, 'b, 'c),List('d, 'e, 'f, 'g, 'h, 'i, 'j, 'k))
   def split(n: Int, l: List[Any]) : (List[Any], List[Any]) = {
-    def loop(r: Int, acc: List[Any], lst: List[Any]) : (List[Any], List[Any]) = {
+    @tailrec def loop(r: Int, acc: List[Any], lst: List[Any]) : (List[Any], List[Any]) = {
       if (r == n) {
         (reverse(acc), lst)
       } else {
@@ -246,7 +248,7 @@ class Solutions {
   // scala> slice(3, 7, List('a, 'b, 'c, 'd, 'e, 'f, 'g, 'h, 'i, 'j, 'k))
   // res0: List[Symbol] = List('d, 'e, 'f, 'g)
   def slice(a: Int, b: Int, l: List[Any]) : List[Any] = {
-    def loop(i: Int, acc: List[Any], lst: List[Any]) : List[Any] = {
+    @tailrec def loop(i: Int, acc: List[Any], lst: List[Any]) : List[Any] = {
       if (i >= b) {
         reverse(acc)
       } else if (i >= a) {
@@ -264,7 +266,7 @@ class Solutions {
   // 
   // scala> rotate(-2, List('a, 'b, 'c, 'd, 'e, 'f, 'g, 'h, 'i, 'j, 'k))
   // res1: List[Symbol] = List('j, 'k, 'a, 'b, 'c, 'd, 'e, 'f, 'g, 'h, 'i)
-  def rotate(n: Int, l: List[Any]) : List[Any] = {
+  @tailrec def rotate(n: Int, l: List[Any]) : List[Any] = {
     if (n < 0) {
       rotate(length(l) + n, l)
     } else {
@@ -292,7 +294,7 @@ class Solutions {
   // scala> range(4, 9)
   // res0: List[Int] = List(4, 5, 6, 7, 8, 9)
   def range(a: Int, b: Int) : List[Int] = {
-    def loop(acc: List[Int], i: Int) : List[Int] = {
+    @tailrec def loop(acc: List[Int], i: Int) : List[Int] = {
       if (i < a) {
         acc
       } else {
@@ -308,7 +310,7 @@ class Solutions {
   // Hint: Use the solution to problem P20
   // 
   def randomSelect(n: Int, l: List[Any]) : List[Any] = {
-    def loop(acc: List[(List[Any], Any)]) : List[Any] = {
+    @tailrec def loop(acc: List[(List[Any], Any)]) : List[Any] = {
       if (length(acc) > n) {
         extractRemoved(acc)
       } else {
@@ -316,7 +318,7 @@ class Solutions {
       }
     }
     def extractRemoved(lst: List[(List[Any], Any)]) : List[Any] = {
-      def loop(acc: List[Any], lstt: List[(List[Any], Any)]) : List[Any] = {
+      @tailrec def loop(acc: List[Any], lstt: List[(List[Any], Any)]) : List[Any] = {
         if (empty(lstt)) {
           acc
         } else {

@@ -63,4 +63,25 @@ class SolutionsSpec extends FlatSpec with Matchers {
   "P21" should "find insertAt" in {
     (new Solutions()).insertAt('new, 1, List('a, 'b, 'c, 'd)) should be (List('a, 'new, 'b, 'c, 'd))
   }
+  "P22" should "find range" in {
+    (new Solutions()).range(4, 9) should be (List(4, 5, 6, 7, 8, 9))
+  }
+  "P23" should "find randomSelect" in {
+    (new Solutions()).length((new Solutions()).randomSelect(3, List('a, 'b, 'c, 'd, 'f, 'g, 'h))) should be (3)
+  }
+  "P24" should "find lotto" in {
+    (new Solutions()).length((new Solutions()).lotto(6, 49)) should be (6)
+  }
+  "P25" should "find randomPermute" in {
+    (new Solutions()).length((new Solutions()).randomPermute(List('a, 'b, 'c, 'd, 'e, 'f))) should be (6)
+  }
+  "P26" should "find combinations" in {
+    (new Solutions()).combinations(3, List('a, 'b, 'c, 'd, 'e, 'f)) should be (List(List('a, 'b, 'c), List('a, 'b, 'd), List('a, 'b, 'e), List('a, 'b, 'f), List('a, 'c, 'd), List('a, 'c, 'e), List('a, 'c, 'f), List('a, 'd, 'e), List('a, 'd, 'f), List('a, 'e, 'f), List('b, 'c, 'd), List('b, 'c, 'e), List('b, 'c, 'f), List('b, 'd, 'e), List('b, 'd, 'f), List('b, 'e, 'f), List('c, 'd, 'e), List('c, 'd, 'f), List('c, 'e, 'f), List('d, 'e, 'f)))
+  }
+  "P28" should "find lsort" in {
+    (new Solutions()).lsort(List(List('a, 'b, 'c), List('d, 'e), List('f, 'g, 'h), List('d, 'e), List('i, 'j, 'k, 'l), List('m, 'n), List('o))) should be (List(List('o), List('m, 'n), List('d, 'e), List('d, 'e), List('f, 'g, 'h), List('a, 'b, 'c), List('i, 'j, 'k, 'l)))
+  }
+  "P28" should "find lsortFreq" in {
+    (new Solutions()).lsortFreq(List(List('a, 'b, 'c), List('d, 'e), List('f, 'g, 'h), List('d, 'e), List('i, 'j, 'k, 'l), List('m, 'n), List('o))) should be (List(List('i, 'j, 'k, 'l), List('o), List('f, 'g, 'h), List('a, 'b, 'c), List('d, 'e), List('m, 'n), List('d, 'e)))
+  }
 }

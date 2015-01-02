@@ -1,12 +1,12 @@
 import scala.annotation.tailrec
-import scala.util.control.Breaks._
+import scala.collection.mutable.LinkedHashSet
 
 package miscellaneous {
   class S99M {
     // P90 (**) Eight queens problem
     // This is a classical problem in computer science. The objective is to place eight queens on a chessboard so that no two queens are attacking each other; i.e., no two queens are in the same row, the same column, or on the same diagonal.
     // Hint: Represent the positions of the queens as a list of numbers 1..N. Example: List(4, 2, 7, 3, 6, 8, 5, 1) means that the queen in the first column is in row 4, the queen in the second column is in row 2, etc. Use the generate-and-test paradigm.
-    def place : List[List[Int]] = {
+    def eightQueens : List[List[Int]] = {
       def mapToBoardIndices(l: List[Int]) : Set[Int] = {
         Set(
           l(0),      l(1) + 8,
@@ -72,6 +72,88 @@ package miscellaneous {
       // The entry in the ith position is the row index of the queen in the ith
       // column.
       List(0, 1, 2, 3, 4, 5, 6, 7).permutations.toList.filter{validBoard(_)}
+    }
+    // P91 (**) Knight's tour.
+    // Another famous problem is this one: How can a knight jump on an NÃ—N chessboard in such a way that it visits every square exactly once?
+    // Hints: Represent the squares by pairs of their coordinates of the form (X, Y), where both X and Y are integers between 1 and N. (Alternately, define a Point class for the same purpose.) Write a function jumps(N, (X, Y)) to list the squares that a knight can jump to from (X, Y) on a NÃ—N chessboard. And finally, represent the solution of our problem as a list of knight positions (the knight's tour).
+    // 
+    // It might be nice to find more than one tour, but a computer will take a long time trying to find them all at once. Can you make a lazy list that only calculates the tours as needed?
+    // 
+    // Can you find only "closed tours", where the knight can jump from its final position back to its starting position?
+    def knightsTour : List[(Int, Int)] = {
+      def jumps(p: (Int, Int)) : List[(Int, Int)] = {
+        var l = List[(Int, Int)]()
+        if (p._1 > 0) {
+          // x -
+          //   -
+          //   (p._1,p._2)
+          if (p._2 > 1) {
+            l = (p._1 - 1, p._2 - 2) :: l
+          }
+          //   (p._1, p._2)
+          //   -
+          // x -
+          if (p._2 < 6) {
+            l = (p._1 - 1, p._2 + 2) :: l
+          }
+          if (p._1 > 1) {
+            // x - -
+            //     (p._1, p._2)
+            if (p._2 > 0) {
+              l = (p._1 - 2, p._2 - 1) :: l
+            }
+            //     (p._1, p._2)
+            // x - -
+            if (p._2 < 7) {
+              l = (p._1 - 2, p._2 + 1) :: l
+            }
+          }
+        }
+        if (p._1 < 7) {
+          // - x
+          // -
+          // (p._1, p._2)
+          if (p._2 > 1) {
+            l = (p._1 + 1, p._2 - 2) :: l
+          }
+          // (p._1, p._2)
+          // -
+          // - x
+          if (p._2 < 6) {
+            l = (p._1 + 1, p._2 + 2) :: l
+          }
+          if (p._1 < 6) {
+            // - - x
+            // (p._1, p._2)
+            if (p._2 > 0) {
+              l = (p._1 + 2, p._2 - 1) :: l
+            }
+            // (p._1, p._2)
+            // - - x
+            if (p._2 < 7) {
+              l = (p._1 + 2, p._2 + 1) :: l
+            }
+          }
+        }
+        l
+      }
+      def dfs(start: (Int, Int), visited: LinkedHashSet[(Int, Int)], remVisitedCount: Int) : List[(Int, Int)] = {
+        if (remVisitedCount == 0) {
+          return (visited + start).toList
+        }
+        // This sortWith is a heuristic that says to visit nodes in order of
+        // ascending degree. Intuitively, this is visiting the less accessible
+        // nodes before the more accessible nodes.
+        val js = jumps(start).sortWith{(a,b) => jumps(a).size < jumps(b).size}
+        for (i <- (0 to js.size - 1)) {
+          if (!visited.contains(js(i))) {
+            val np = dfs(js(i), visited + start, remVisitedCount - 1)
+            if (np.size > 0) return np
+          }
+        }
+        List[(Int, Int)]()
+      }
+      dfs((0,0), LinkedHashSet(), 63)
     }
   }
 }

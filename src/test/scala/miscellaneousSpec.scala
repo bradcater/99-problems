@@ -4,7 +4,7 @@ import miscellaneous._
 
 class MiscellaneousSpec extends FlatSpec with Matchers {
   "P90" should "place 8 queens" in {
-    val solutions = (new S99M()).place
+    val solutions = (new S99M()).eightQueens
     solutions.size should be (92)
     solutions.toSet.intersect(Set(List(0,4,7,5,2,6,1,3))).size should be (1)
     //println(solutions(0))
@@ -20,5 +20,9 @@ class MiscellaneousSpec extends FlatSpec with Matchers {
     // 6           x
     // 7    x
   }
+  "P91" should "find the knight's tour" in {
+    val solution = (new S99M()).knightsTour
+    solution.size should be (64)
+    solution.toSet.size should be (64)
+  }
 }
-

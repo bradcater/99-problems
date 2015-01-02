@@ -43,8 +43,9 @@ final class Lists {
     }
     loop(0, l)
   }
-  def empty[T](l: List[T]) : Boolean = {
-    length(l) == 0
+  def empty[T](l: List[T]) : Boolean = l match {
+    case Nil => true
+    case _   => false
   }
   // P05 (*) Reverse a list.
   // Example:

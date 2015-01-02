@@ -7,8 +7,8 @@ package miscellaneous {
     // This is a classical problem in computer science. The objective is to place eight queens on a chessboard so that no two queens are attacking each other; i.e., no two queens are in the same row, the same column, or on the same diagonal.
     // Hint: Represent the positions of the queens as a list of numbers 1..N. Example: List(4, 2, 7, 3, 6, 8, 5, 1) means that the queen in the first column is in row 4, the queen in the second column is in row 2, etc. Use the generate-and-test paradigm.
     def place : List[List[Int]] = {
-      def reverse(l: List[Any]) : List[Any] = {
-        @tailrec def loop(acc: List[Any], lst: List[Any]) : List[Any] = lst match {
+      def reverse[@specialized(Int) T](l: List[T]) : List[T] = {
+        @tailrec def loop(acc: List[T], lst: List[T]) : List[T] = lst match {
           case Nil => acc
           case _   => loop(lst.head :: acc, lst.tail)
         }
@@ -19,7 +19,7 @@ package miscellaneous {
           if (lst.size == 0) acc
           else loop(8 * acc.size + lst.head :: acc, lst.tail)
         }
-        reverse(loop(Nil, l)).asInstanceOf[List[Int]]
+        reverse(loop(Nil, l))
       }
       def checkLists(l: List[Int], groups: List[List[Int]]) : Boolean = {
         groups.filter{lst => mapToBoardIndices(l).toSet.intersect(lst.toSet).size > 1}.size == 0

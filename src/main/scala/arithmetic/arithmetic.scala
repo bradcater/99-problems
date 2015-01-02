@@ -40,23 +40,17 @@ package arithmetic {
     // scala> 315.primeFactors
     // res0: List[Int] = List(3, 3, 5, 7)
     def primeFactors : List[Int] = {
-      def reverse(l: List[Int]) : List[Int] = {
-        @tailrec def loop(acc: List[Int], lst: List[Int]) : List[Int] = lst match {
+      def reverse[@specialized(Int) T](l: List[T]) : List[T] = {
+        @tailrec def loop[@specialized(Int) T](acc: List[T], lst: List[T]) : List[T] = lst match {
           case Nil => acc
           case _   => loop(lst.head :: acc, lst.tail)
         }
         loop(Nil, l)
       }
       @tailrec def loop(acc: List[Int], n: Int, ps: Stream[Int]): List[Int] = {
-        if (n.isPrime) {
-          //List(n)
-          n :: acc
-        } else if (n % ps.head == 0) {
-          loop(ps.head :: acc, n / ps.head, ps)
-          //ps.head :: loop(n / ps.head, ps)
-        } else {
-          loop(acc, n, ps.tail)
-        }
+        if (n.isPrime) n :: acc
+        else if (n % ps.head == 0) loop(ps.head :: acc, n / ps.head, ps)
+        else loop(acc, n, ps.tail)
       }
       reverse(loop(Nil, this, primes))
     }

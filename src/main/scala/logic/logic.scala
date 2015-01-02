@@ -70,21 +70,18 @@ package logic {
     // Concatenated: 000, 001, 011, 010, 110, 111, 101, 100
     def gray(b: Int) : List[String] = {
       def reverse(l: List[String]) : List[String] = {
-        def loop(acc: List[String], lst: List[String]) : List[String] = {
-          if (lst.size == 0) acc
-          else loop(lst.head :: acc, lst.tail)
+        def loop(acc: List[String], lst: List[String]) : List[String] = lst match {
+          case Nil => acc
+          case _   => loop(lst.head :: acc, lst.tail)
         }
         loop(Nil, l)
       }
       def prefixWith(p: String, l: List[String]) : List[String] = {
         l.map{p + _}
       }
-      def loop(bb: Int, l: List[String]) : List[String] = {
-        if (bb == b) {
-          l
-        } else {
-          loop(bb + 1, prefixWith("0", l) ::: prefixWith("1", reverse(l)))
-        }
+      def loop(bb: Int, l: List[String]) : List[String] = bb match {
+        case `b` => l
+        case _   => loop(bb + 1, prefixWith("0", l) ::: prefixWith("1", reverse(l)))
       }
       loop(2, List("00", "01", "11", "10"))
     }
@@ -94,10 +91,8 @@ package logic {
     // 
     // scala> huffman(List(("a", 45), ("b", 13), ("c", 12), ("d", 16), ("e", 9), ("f", 5)))
     // res0: List[String, String] = List((a,0), (b,101), (c,100), (d,111), (e,1101), (f,1100))
-    def qsort(l: List[(String, Int)]) : List[(String, Int)] = {
-      if (l.size <= 1) {
-        l
-      } else if (l.size == 2 && l.head._2 >= l(1)._2) {
+    def qsort[T](l: List[(T, Int)]) : List[(T, Int)] = {
+      if ((l.size <= 1) || (l.size == 2 && l.head._2 >= l(1)._2)) {
         l
       } else if (l.size == 2) {
         List(l(1), l.head)

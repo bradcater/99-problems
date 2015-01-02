@@ -25,4 +25,18 @@ class MiscellaneousSpec extends FlatSpec with Matchers {
     solution.size should be (64)
     solution.toSet.size should be (64)
   }
+  "P97" should "solve Sudoku" in {
+    val solution = (new S99M()).solveSudoku(List(
+      List(0, 0, 4, 8, 0, 0, 0, 1, 7),
+      List(6, 7, 0, 9, 0, 0, 0, 0, 0),
+      List(5, 0, 8, 0, 3, 0, 0, 0, 4),
+      List(3, 0, 0, 7, 4, 0, 1, 0, 0),
+      List(0, 6, 9, 0, 0, 0, 7, 8, 0),
+      List(0, 0, 1, 0, 6, 9, 0, 0, 5),
+      List(1, 0, 0, 0, 8, 0, 3, 0, 6),
+      List(0, 0, 0, 0, 0, 6, 0, 9, 1),
+      List(2, 4, 0, 0, 0, 1, 5, 0, 0)
+    ))
+    solution.flatten.toSet.size should be (9)
+  }
 }

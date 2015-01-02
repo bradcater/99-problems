@@ -155,5 +155,145 @@ package miscellaneous {
       }
       dfs((0,0), LinkedHashSet(), 63)
     }
+    // P97 (**) Sudoku. (alternate solution)
+    // Sudoku puzzles go like this:
+    //    Problem statement                 Solution
+    // 
+    //     .  .  4 | 8  .  . | .  1  7      9  3  4 | 8  2  5 | 6  1  7
+    //             |         |                      |         |
+    //     6  7  . | 9  .  . | .  .  .      6  7  2 | 9  1  4 | 8  5  3
+    //             |         |                      |         |
+    //     5  .  8 | .  3  . | .  .  4      5  1  8 | 6  3  7 | 9  2  4
+    //     --------+---------+--------      --------+---------+--------
+    //     3  .  . | 7  4  . | 1  .  .      3  2  5 | 7  4  8 | 1  6  9
+    //             |         |                      |         |
+    //     .  6  9 | .  .  . | 7  8  .      4  6  9 | 1  5  3 | 7  8  2
+    //             |         |                      |         |
+    //     .  .  1 | .  6  9 | .  .  5      7  8  1 | 2  6  9 | 4  3  5
+    //     --------+---------+--------      --------+---------+--------
+    //     1  .  . | .  8  . | 3  .  6      1  9  7 | 5  8  2 | 3  4  6
+    //             |         |                      |         |
+    //     .  .  . | .  .  6 | .  9  1      8  5  3 | 4  7  6 | 2  9  1
+    //             |         |                      |         |
+    //     2  4  . | .  .  1 | 5  .  .      2  4  6 | 3  9  1 | 5  7  8
+    // Every spot in the puzzle belongs to a (horizontal) row and a (vertical) column, as well as to one single 3Ã—3 square (which we call "square" for short). At the beginning, some of the spots carry a single-digit number between 1 and 9. The problem is to fill the missing spots with digits in such a way that every number between 1 and 9 appears exactly once in each row, in each column, and in each square.
+    def solveSudoku(m: List[List[Int]]) : List[List[Int]] = {
+      def getColumn(mm: List[List[Int]], c: Int) : Set[Int] = {
+        mm.map{_(c)}.filter{_ > 0}.toSet
+      }
+      def getRow(mm: List[List[Int]], r: Int) : Set[Int] = {
+        mm(r).filter{_ > 0}.toSet
+      }
+      // Label the squares as
+      // 0 | 1 | 2
+      // 3 | 4 | 5
+      // 6 | 7 | 8
+      val ninthIndices = Map.empty[Int, List[(Int, Int)]] + (0 -> List(
+          (0,0),(0,1),(0,2),
+          (1,0),(1,1),(1,2),
+          (2,0),(2,1),(2,2)
+        )) + (1 -> List(
+          (0,3),(0,4),(0,5),
+          (1,3),(1,4),(1,5),
+          (2,3),(2,4),(2,5)
+        )) + (2 -> List(
+          (0,6),(0,7),(0,8),
+          (1,6),(1,7),(1,8),
+          (2,6),(2,7),(2,8)
+        )) + (3 -> List(
+          (3,0),(3,1),(3,2),
+          (4,0),(4,1),(4,2),
+          (5,0),(5,1),(5,2)
+        )) + (4 -> List(
+          (3,3),(3,4),(3,5),
+          (4,3),(4,4),(4,5),
+          (5,3),(5,4),(5,5)
+        )) + (5 -> List(
+          (3,6),(3,7),(3,8),
+          (4,6),(4,7),(4,8),
+          (5,6),(5,7),(5,8)
+        )) + (6 -> List(
+          (6,0),(6,1),(6,2),
+          (7,0),(7,1),(7,2),
+          (8,0),(8,1),(8,2)
+        )) + (7 -> List(
+          (6,3),(6,4),(6,5),
+          (7,3),(7,4),(7,5),
+          (8,3),(8,4),(8,5)
+        )) + (8 -> List(
+          (6,6),(6,7),(6,8),
+          (7,6),(7,7),(7,8),
+          (8,6),(8,7),(8,8)
+        ))
+      def getNinth(mm: List[List[Int]], s: Int) : Set[Int] = {
+        ninthIndices(s).map{p => mm(p._1)(p._2)}.toSet
+      }
+      def getSquare(mm: List[List[Int]], r: Int, c: Int) : Set[Int] = {
+        if (r < 6) {
+          if (r < 3) {
+            if (c < 6) {
+              getNinth(mm, if(c < 3) 0 else 1)
+            } else {
+              getNinth(mm, 2)
+            }
+          } else {
+            if (c < 6) {
+              getNinth(mm, if(c < 3) 3 else 4)
+            } else {
+              getNinth(mm, 5)
+            }
+          }
+        } else if (c < 6) {
+          getNinth(mm, if(c < 3) 6 else 7)
+        } else {
+          getNinth(mm, 8)
+        }
+      }
+      def setMatrixValue(mm: List[List[Int]], r: Int, c: Int, v: Int) : List[List[Int]] = {
+        setValue(mm, r, setValue(mm(r), c, v))
+      }
+      def setValue[T](l: List[T], idx: Int, v: T) : List[T] = {
+        def reverse(lst: List[T]) : List[T] = {
+          @tailrec def loop(acc: List[T], lstt: List[T]) : List[T] = lstt match {
+            case Nil => acc
+            case _   => loop(lstt.head :: acc, lstt.tail)
+          }
+          loop(Nil, lst)
+        }
+        @tailrec def loop(acc: List[T], lst: List[T], curIdx: Int) : List[T] = {
+          if (lst.size == 0) {
+            acc
+          } else if (curIdx == idx) {
+            loop(v :: acc, lst.tail, curIdx + 1)
+          } else {
+            loop(lst.head :: acc, lst.tail, curIdx + 1)
+          }
+        }
+        reverse(loop(Nil, l, 0))
+      }
+      def prettyPrintMatrix(mm: List[List[Int]]) : Unit = {
+        mm.foreach{r => println(r)}
+      }
+      def solved(mm: List[List[Int]]) : Boolean = {
+        !mm.exists{r => r.exists{_ == 0}}
+      }
+      val goodNumbers = Set(0,1,2,3,4,5,6,7,8,9)
+      def solve(mm: List[List[Int]]) : List[List[Int]] = {
+        if (solved(mm)) return mm
+        for (r <- (0 to 8)) {
+          for (c <- (0 to 8)) {
+            if (mm(r)(c) == 0) {
+              val availableNumbers = goodNumbers &~ (getRow(mm, r) | getColumn(mm, c) | getSquare(mm, r, c))
+              if (availableNumbers.size == 1) {
+                return solve(setMatrixValue(mm, r, c, availableNumbers.toList.head))
+              }
+            }
+          }
+        }
+        prettyPrintMatrix(mm)
+        sys.error("Why can't this be solved?")
+      }
+      solve(m)
+    }
   }
 }
